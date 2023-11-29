@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Listings</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link href="/static/style.css" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <h1>Welcome to Welp </h1>
+    </header>
+
+    <main>
+        <section class="restaurant-listings">
+            {% for restaurant in restaurants %}
+                <article class="restaurant">
+                    <h2>{{ restaurant.name }}</h2>
+                    <p>{{ restaurant.description }}</p>
+                    <p>Rating: {{ restaurant.rating }} / 5</p>
+                    <p><a href="{{ restaurant.url }}">Visit Website</a></p>
+                </article>
+            {% endfor %}
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2023 Restaurant Listings</p>
+    </footer>
+</body>
+</html>

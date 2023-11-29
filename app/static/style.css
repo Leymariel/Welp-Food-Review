@@ -11,15 +11,15 @@ body {
 }
 
 .login-container {
-  width: 100%;
-  max-width: 400px;
+  width: 50%;
+  max-width: 500px;
 }
 
 .login-box {
-  background: white;
+  background: rgb(255, 255, 255);
   padding: 50px;
   border-radius: 5px;
-  box-shadow: 0 0px 100px rgba(203, 66, 66, 0.2);
+  box-shadow: 0 0px 20px rgba(203, 66, 66, 0.2);
 }
 
 .login-form {
@@ -56,7 +56,7 @@ button {
 }
 
 button:hover {
-  background: #4cae4c;
+  background: rgb(161, 89, 62);
 }
 
 input[type="text"],
@@ -68,4 +68,35 @@ input[type="password"] {
 input[type="text"]:focus,
 input[type="password"]:focus {
   border-color: #5cb85c;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background: #e2dbdb;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+}
+
+.additional-links {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.additional-links a {
+  display: block;
+  margin-bottom: 10px;
+  color: rgb(85, 34, 16); /* Example link color, adjust as needed */
+  text-decoration: none;
+}
+
+body {
+  background-image: url('/static/images/background.jpg');
+  background-size: cover; /* Cover the entire viewport */
+  background-position: center; /* Center the image */
+  background-repeat: no-repeat; /* Do not repeat the image */
 }
