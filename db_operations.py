@@ -41,3 +41,14 @@ class db_operations():
                 print(row)
             print("\n")
     
+    def exists(self, table, IDvar, IDval):
+        query = f'''
+        SELECT COUNT(*)
+        FROM {table}
+        WHERE {IDvar} = '{IDval}'
+        '''
+        self.cursor.execute(query)
+        count = self.cursor.fetchone()[0]
+        return count
+    
+    
