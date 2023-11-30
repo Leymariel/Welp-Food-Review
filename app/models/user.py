@@ -16,12 +16,12 @@ class User:
         return User(info[0], info[1], info[2], info[3], info[4])
 
     @staticmethod
-    def getUserByUsername(username):
+    def getUserByEmail(email):
         db_ops = db_operations()
-        if not db_ops.exists("Users", "Username", username):
+        if not db_ops.exists("Users", "Email", email):
             return None
     
-        user_row = db_ops.get_row("Users", "Username", username)
+        user_row = db_ops.get_row("Users", "Email", email)
         return user_row
 
     def checkPassword(self, password):

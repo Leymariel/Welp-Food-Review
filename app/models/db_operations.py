@@ -71,3 +71,8 @@ class db_operations:
         found = self.cursor.fetchone()
         return found
     
+    def send_query(self, query):
+        self.cursor.execute(query)
+        self.connection.commit()
+        return self.cursor.lastrowid
+    
