@@ -53,12 +53,21 @@ def create_business():
     # Return the business creation page
     return render_template('create-business.html')
 
-@app.route('/create-account', methods=['GET', 'POST'])
+@app.route('/create-user', methods=['GET', 'POST'])
 def create_account():
     # Return the account creation page
-    return render_template('create_account.html')
+    return render_template('create-user.html')
 
-@app.route('/main-page', methods=['GET', 'POST'])
+@app.route('/main-page')
 def main_page():
     # Return the account creation page
-    return render_template('main-page.html')
+    businesses = Business.getAll()
+    print(businesses)
+    return render_template('main-page.html', restaurants=businesses)
+
+
+@app.route('/business/<int:email>')
+def business_page(email):
+    # Fetch the business details from the database using business_id
+    business = Business.getBusinessByEmail(email)  # This is a hypothetical function
+    return render_template('business_page.html', business=business)

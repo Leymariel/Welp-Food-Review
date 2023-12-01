@@ -76,3 +76,13 @@ class db_operations:
         self.connection.commit()
         return self.cursor.lastrowid
     
+    def get_all(self, table):
+        
+        query = f'''
+        SELECT *
+        FROM {table}'
+        '''
+        self.cursor.execute(query)
+        results = self.cursor.fetchall()
+        
+        return results

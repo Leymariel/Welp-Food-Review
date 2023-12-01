@@ -25,3 +25,8 @@ class Business:
         db_ops = db_operations()
         query = f"INSERT INTO Businesses (BusinessName, Address, Phone, Password, Email, Description) VALUES ('{self.businessName}', '{self.address}', '{self.phone}', '{self.password}', '{self.email}', '{self.description}');"
         db_ops.send_query(query)
+
+    @staticmethod
+    def getAll():
+        db_ops = db_operations()
+        return db_ops.get_all("Businesses")
