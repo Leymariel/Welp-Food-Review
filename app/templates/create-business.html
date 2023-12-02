@@ -3,82 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-    <link href="/static/style.css" rel="stylesheet">
-    <script>
-        function formatPhoneNumber(event) {
-            var input = event.target.value.replace(/\D/g, '').substring(0, 10); // Remove non-digits and limit length
-            var areaCode = input.substring(0,3);
-            var middle = input.substring(3,6);
-            var last = input.substring(6,10);
-
-            // Format the input based on the length
-            if(input.length > 6){
-                event.target.value = `(${areaCode}) ${middle}-${last}`;
-            } else if(input.length > 3){
-                event.target.value = `(${areaCode}) ${middle}`;
-            } else if(input.length > 0){
-                event.target.value = `(${areaCode}`;
-            }
-
-            // Validate and show message
-            validatePhoneNumber(input);
-        }
-
-        function validatePhoneNumber(input) {
-            var message = '';
-            if(input.length < 10 && input.length > 0) {
-                message = 'Incomplete number';
-            } else if(input.length > 10) {
-                message = 'Number is too long';
-            }
-            document.getElementById('phone-message').textContent = message;
-        }
-    </script>
+    <title>Create Business Account</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.1.2/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-    
-    <div class="login-container">
-        <div class="login-box">
-            <h2>Business Portal</h2>
-            
+<body class="bg-gray-100">
 
-            <form class = "signin-form" method="post" action="/create-business">
-                <div class = "form-control" >
-                    <input type="text" name="business_name" placeholder="Business name" required>
+    <header class="bg-white shadow">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <a href="/" class="text-red-600 text-3xl font-bold">Welp</a>
+            <div class="flex space-x-4">
+                <a href="/" class="hover:text-red-600">Log In</a>
+                <a href="/create-user" class="hover:text-red-600">Sign Up</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-8">
+        <div class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
+            <h2 class="text-2xl mb-6 text-center text-gray-700 font-bold">Business Portal</h2>
+            <form class="mb-4" method="post" action="/create-business">
+                <div class="mb-4">
+                    <input type="text" name="business_name" placeholder="Business name" class="w-full p-3 rounded bg-gray-200 border border-gray-300 focus:border-red-500 focus:outline-none" required>
                 </div>
-                <div class = "form-control" >
-                    <input type="text" name="address" placeholder="Address" required>
+                <div class="mb-4">
+                    <input type="text" name="address" placeholder="Address" class="w-full p-3 rounded bg-gray-200 border border-gray-300 focus:border-red-500 focus:outline-none" required>
                 </div>
-                <div class = "form-control" >
-                    <input type="tel" name="phone" oninput="formatPhoneNumber(event)" placeholder="(123) 456-7890">
-                    <div id="phone-message" style="color: red;"></div>
+                <div class="mb-4">
+                    <input type="tel" name="phone" placeholder="(123) 456-7890" class="w-full p-3 rounded bg-gray-200 border border-gray-300 focus:border-red-500 focus:outline-none" oninput="formatPhoneNumber(event)" required>
                 </div>
-                <div class = "form-control" >
-                    <input type="text" name="email" placeholder="Email" required>
+                <div class="mb-4">
+                    <input type="email" name="email" placeholder="Email" class="w-full p-3 rounded bg-gray-200 border border-gray-300 focus:border-red-500 focus:outline-none" required>
                 </div>
-                <div class = "form-control" >
-                    <input type="text" name="description" placeholder="Description" required>
+                <div class="mb-4">
+                    <input type="text" name="description" placeholder="Description" class="w-full p-3 rounded bg-gray-200 border border-gray-300 focus:border-red-500 focus:outline-none" required>
                 </div>
-                <div class = "form-control" >
-                    <input type="password" name="password" placeholder="Password" required>
+                <div class="mb-4">
+                    <input type="password" name="password" placeholder="Password" class="w-full p-3 rounded bg-gray-200 border border-gray-300 focus:border-red-500 focus:outline-none" required>
                 </div>
-                <div class = "form-control" >
-                    <input type="password" name="passwordConf" placeholder="Confirm Password" required>
+                <div class="mb-4">
+                    <input type="password" name="passwordConf" placeholder="Confirm Password" class="w-full p-3 rounded bg-gray-200 border border-gray-300 focus:border-red-500 focus:outline-none" required>
                 </div>
-              
-              <button type="submit">Create</button>
+                <button type="submit" class="w-full bg-red-600 text-white p-3 rounded hover:bg-red-700 focus:outline-none">Create</button>
             </form>
             {% if error %}
-            <div style="color: red;">{{ error }}</div>
+                <div class="text-red-600 text-sm text-center">{{ error }}</div>
             {% endif %}
-
-            <div class="additional-links">
-              <a href="/create-business">New business? create your page</a>
-              <a href="/">Log in as user</a>
+            <div class="text-center text-sm">
+                <a href="/" class="text-red-600 hover:text-red-800 hover:underline">Log in as user</a>
             </div>
         </div>
-    </div>
+    </main>
+
+    <footer class="bg-white shadow mt-8 py-6">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-sm text-gray-600">&copy; 2023 Welp. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Your existing JavaScript for phone number formatting
+    </script>
 </body>
 </html>

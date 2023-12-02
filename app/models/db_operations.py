@@ -78,10 +78,7 @@ class db_operations:
     
     def get_all(self, table):
         
-        query = f'''
-        SELECT *
-        FROM {table}'
-        '''
+        query = f"SELECT * FROM {table};"
         self.cursor.execute(query)
         results = self.cursor.fetchall()
         

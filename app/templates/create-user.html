@@ -3,44 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-    <link href="/static/style.css" rel="stylesheet">
-    
+    <title>Create User Account</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.1.2/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-    
-    <div class="login-container">
-        <div class="login-box">
-            <h2>Create Account</h2>
-            
+<body class="bg-gray-100">
 
-            <form class = "signin-form" method="post" action="/create-business">
-                <div class = "form-control" >
-                    <input type="text" name="username" placeholder="Username" required>
+    <header class="bg-white shadow">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <a href="/" class="text-red-600 text-3xl font-bold">Welp</a>
+            <div class="flex space-x-4">
+                <a href="/business-login" class="hover:text-red-600">For Businesses</a>
+                <a href="/" class="hover:text-red-600">Log In</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-8">
+        <div class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
+            <h2 class="text-2xl mb-6 text-center text-gray-700 font-bold">Create User Account</h2>
+            <form class="mb-4" method="post" action="/create-user">
+                <div class="mb-4">
+                    <input type="text" name="username" placeholder="Username" class="w-full p-3 rounded bg-gray-200 border border-gray-300 focus:border-red-500 focus:outline-none" required>
                 </div>
-                
-                <div class = "form-control" >
-                    <input type="text" name="email" placeholder="Email" required>
+                <div class="mb-4">
+                    <input type="text" name="email" placeholder="Email" class="w-full p-3 rounded bg-gray-200 border border-gray-300 focus:border-red-500 focus:outline-none" required>
                 </div>
-                <div class = "form-control" >
-                    <input type="password" name="password" placeholder="Password" required>
+                <div class="mb-4">
+                    <input type="password" name="password" placeholder="Password" class="w-full p-3 rounded bg-gray-200 border border-gray-300 focus:border-red-500 focus:outline-none" required>
                 </div>
-                <div class = "form-control" >
-                    <input type="password" name="passwordConf" placeholder="Confirm Password" required>
+                <div class="mb-4">
+                    <input type="password" name="passwordConf" placeholder="Confirm Password" class="w-full p-3 rounded bg-gray-200 border border-gray-300 focus:border-red-500 focus:outline-none" required>
                 </div>
-              
-              <button type="submit">Create</button>
+                <button type="submit" class="w-full bg-red-600 text-white p-3 rounded hover:bg-red-700 focus:outline-none">Create Account</button>
             </form>
             {% if error %}
-            <div style="color: red;">{{ error }}</div>
+                <div class="text-red-600 text-sm text-center">{{ error }}</div>
             {% endif %}
-
-            <div class="additional-links">
-              <a href="/create-business">New business? create your page</a>
-              <a href="/">Log in as user</a>
+            <div class="text-center text-sm">
+                <a href="/" class="text-red-600 hover:text-red-800 hover:underline">Already have an account? Log in</a>
             </div>
         </div>
-    </div>
+    </main>
+
+    <footer class="bg-white shadow mt-8 py-6">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-sm text-gray-600">&copy; 2023 Welp. All rights reserved.</p>
+        </div>
+    </footer>
+
 </body>
 </html>

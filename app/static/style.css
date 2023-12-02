@@ -89,10 +89,6 @@ body {
   background-repeat: no-repeat; /* Do not repeat the image */
 }
 
-.restaurant-box {
-  text-decoration: none;
-  color: inherit;
-}
 
 .restaurant {
   border: 1px solid #ddd;
@@ -101,6 +97,60 @@ body {
   display: block;
 }
 
-.restaurant:hover {
+
+
+
+
+.site-header, .site-footer {
+  text-align: center;
+  padding: 1em 0;
+  background-color: #222;
+  color: white;
+}
+
+.content {
+  width: 90%;
+  max-width: 800px;
+  margin: 2em auto;
+  padding: 1em;
+  background-color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.restaurant-listings {
+  list-style: none;
+  padding: 0;
+}
+
+.restaurant-box {
+  text-decoration: none;
+  color: inherit;
+  border-bottom: 1px solid #ddd;
+  display: block;
+  padding: 1em;
+}
+
+.restaurant-box:last-child {
+  border-bottom: none;
+}
+
+.restaurant-box:hover {
   background-color: #f5f5f5;
+}
+
+.restaurant h2 {
+  margin-top: 0;
+}
+
+.description {
+  color: #666;
+}
+
+.rating {
+  font-weight: bold;
+}
+
+.more-details {
+  color: #007bff;
+  text-decoration: underline;
 }

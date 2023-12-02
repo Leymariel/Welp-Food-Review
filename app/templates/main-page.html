@@ -4,31 +4,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Restaurant Listings</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-    <link href="/static/style.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.1.2/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-    <header>
-        <h1>Welcome to Welp </h1>
+<body class="bg-gray-100">
+
+    <header class="bg-white shadow">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <a href="/" class="text-red-600 text-3xl font-bold">Welp</a>
+            <div class="flex space-x-4">
+                <a href="#" class="hover:text-red-600">Write a Review</a>
+                <a href="/business-login" class="hover:text-red-600">For Businesses</a>
+                <a href="/login" class="hover:text-red-600">Log In</a>
+                <a href="/create-user" class="hover:text-red-600">Sign Up</a>
+            </div>
+        </nav>
     </header>
 
-    <main>
-        <section class="restaurant-listings">
+    <main class="container mx-auto px-6 py-8">
+        <div class="flex justify-center">
+            <div class="relative">
+                <input type="search" class="h-14 px-5 pr-10 rounded-full text-sm focus:outline-none" placeholder="Search...">
+                <button type="submit" class="absolute right-0 top-0 mt-5 mr-4">
+                    <svg class="text-gray-600 h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M10,20A10,10,0,1,0,0,10,10,10,0,0,0,10,20Zm0-18a8,8,0,1,1-8,8A8,8,0,0,1,10,2Z"/>
+                        <path d="M21.707,20.293l-5.388-5.388a1,1,0,0,0-1.414,1.414l5.388,5.388a1,1,0,0,0,1.414-1.414Z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <section class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {% for restaurant in restaurants %}
-                <a href="{{ url_for('business_page', business_id=restaurant.id) }}" class="restaurant-box">
-                    <article class="restaurant">
-                        <h2>{{ restaurant.name }}</h2>
-                        <p>{{ restaurant.description }}</p>
-                        <p>Rating: {{ restaurant.rating }} / 5</p>
-                        <p>More Details</p>
-                    </article>
+                <a href="{{ url_for('business_page', id=restaurant[0]) }}" class="restaurant-box rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition">
+                    <img src="{{ restaurant.image_url }}" alt="{{ restaurant[1] }}" class="w-full h-32 sm:h-48 object-cover">
+                    <div class="px-6 py-4">
+                        <h3 class="font-bold text-xl mb-2">{{ restaurant[1] }}</h3>
+                        <p class="text-gray-700 text-base">{{ restaurant[6] }}</p>
+                    </div>
+                    <div class="px-6 pt-4 pb-2">
+                        <span class="inline-block bg-red-200 rounded-full px-3 py-1 text-sm font-semibold text-red-600 mr-2 mb-2">Rating: {{ restaurant[10] }} / 5</span>
+                    </div>
                 </a>
             {% endfor %}
         </section>
     </main>
 
-    <footer>
-        <p>© 2023 Restaurant Listings</p>
+    <footer class="bg-white shadow mt-8 py-6">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-sm text-gray-600">&copy; 2023 Restaurant Listings. All rights reserved.</p>
+        </div>
     </footer>
+
 </body>
 </html>

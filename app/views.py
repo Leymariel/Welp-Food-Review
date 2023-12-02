@@ -15,7 +15,7 @@ def index():
             user = User(info[0], info[1], info[2], info[3], info[4])
             if user and user.checkPassword(password):
         
-                return render_template('main-page.html') # Redirect to the main page after login
+                return redirect(url_for('main_page'))  # Redirect to the main page after login
             else:
                 # If login failed
                 return render_template('index.html', error="Invalid credentials")
@@ -58,7 +58,7 @@ def create_account():
     # Return the account creation page
     return render_template('create-user.html')
 
-@app.route('/main-page')
+@app.route('/main-page', methods=['GET', 'POST'])
 def main_page():
     # Return the account creation page
     businesses = Business.getAll()
@@ -66,8 +66,8 @@ def main_page():
     return render_template('main-page.html', restaurants=businesses)
 
 
-@app.route('/business/<int:email>')
-def business_page(email):
-    # Fetch the business details from the database using business_id
-    business = Business.getBusinessByEmail(email)  # This is a hypothetical function
+@app.route('/business/<int:id>')
+def business_page(id):
+    # Fetch the business details from the database using email
+    business = Business.getBusinessByEmail(id) 
     return render_template('business_page.html', business=business)
