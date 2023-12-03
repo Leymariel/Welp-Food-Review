@@ -1,6 +1,6 @@
 from .db_operations import db_operations
 class User:
-    def __init__(self, id, username, password, email, p_picture = None):
+    def __init__(self, username, password, email, p_picture = None, id = None):
         self.id = id
         self.username = username
         self.password = password
@@ -12,8 +12,9 @@ class User:
     def dump_user(self):
         return self.card
     
+    @staticmethod
     def createUser(info):
-        return User(info[0], info[1], info[2], info[3], info[4])
+        return User(info[0], info[1], info[2], info[3])
 
     @staticmethod
     def getUserByEmail(email):
@@ -28,4 +29,9 @@ class User:
         return self.password == password
     
     def getID(self):
-        return id
+        return self.id
+
+    def createNew(self):
+        db_ops = db_operations()
+        query = f"INSERT INTO Users (Username, Password, Email) VALUES ('{self.username}', '{self.password}', '{self.email}');"
+        db_ops.send_query(query)

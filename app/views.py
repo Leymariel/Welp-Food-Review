@@ -12,7 +12,8 @@ def index():
 
         info = User.getUserByEmail(email)
         if info:
-            user = User(info[0], info[1], info[2], info[3], info[4])
+            user = User(info[1], info[2], info[3], info[4])
+            print(info)
             if user and user.checkPassword(password):
         
                 return redirect(url_for('main_page'))  # Redirect to the main page after login
@@ -95,7 +96,25 @@ def create_business():
 
 @app.route('/create-user', methods=['GET', 'POST'])
 def create_account():
-    # Return the account creation page
+    print(request.method)
+    if request.method == 'POST':
+
+        # Return the account creation page
+        username = request.form['username']
+        email = request.form['email']
+        password = request.form['password']
+        passwordConf = request.form['passwordConf']
+
+        if password != passwordConf:
+            return render_template('create-user.html', error = "Passwords do not match")
+
+        user = User.getUserByEmail(email)
+        if user:
+            return render_template('create-user.html', error ="Email already in use")
+        else:
+            newUser = User(username, password, email)
+            newUser.createNew()
+    # Return the business creation page
     return render_template('create-user.html')
 
 @app.route('/main-page', methods=['GET', 'POST'])
