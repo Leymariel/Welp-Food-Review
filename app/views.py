@@ -7,10 +7,10 @@ from .models.business import Business
 def index():
     if request.method == 'POST':
         
-        username = request.form['email']
+        email = request.form['email']
         password = request.form['password']
 
-        info = User.getUserByEmail(username)
+        info = User.getUserByEmail(email)
         if info:
             user = User(info[0], info[1], info[2], info[3], info[4])
             if user and user.checkPassword(password):
@@ -23,10 +23,50 @@ def index():
     return render_template('index.html')
 
 
+from flask import session
+
 @app.route('/business-login', methods=['GET', 'POST'])
 def business_login():
-    # Return the business login page
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+
+        info = Business.getBusinessByEmail(email)
+        if info:
+            business = Business(info[0], info[1], info[2], info[3], info[4], info[6], info[8])
+            if business and business.checkPassword(password):
+                session['business_id'] = info[0]  # Set business ID in session
+                return redirect(url_for('business_portal'))
+            else:
+                return render_template('business-login.html', error="Invalid credentials")
+
     return render_template('business-login.html')
+
+
+@app.route('/business-portal', methods=['GET', 'POST'])
+def business_portal():
+    # Check if a business is logged in and get their ID
+    business_id = session.get('business_id')
+    if not business_id:
+        return redirect(url_for('business_login'))  # or any appropriate login route
+
+    if request.method == 'POST':
+        # Handle profile picture upload
+        file = request.files['profile_picture']
+        if file:
+            blob_data = file.read()
+            business = Business.getBusinessByID(business_id)
+            business.setPhoto(blob_data)
+            
+            flash("Profile picture updated successfully!")
+            return redirect(url_for('business_portal'))
+
+    # Fetch the current business details for display
+
+    business_info = Business.getBusinessByID(business_id)
+    
+    # Pass the business information to the template
+    return render_template('business-portal.html', business=business_info)
 
 @app.route('/create-business', methods=['GET', 'POST'])
 def create_business():
@@ -71,3 +111,16 @@ def business_page(id):
     # Fetch the business details from the database using email
     business = Business.getBusinessByEmail(id) 
     return render_template('business_page.html', business=business)
+
+
+@app.route('/image/<int:business_id>')
+def serve_image(business_id):
+    
+    business_info = Business.getBusinessByID(business_id)
+    business = Business(*business_info)
+    image_data = business.getPhoto()
+
+    if image_data and image_data[0]:
+        return Response(image_data[0], mimetype='image/jpeg')  # Adjust MIME type if necessary
+    else:
+        return "No image found", 404

@@ -61,7 +61,34 @@
     </footer>
 
     <script>
-        // Your existing JavaScript for phone number formatting
+        function formatPhoneNumber(event) {
+            var input = event.target.value.replace(/\D/g, '').substring(0, 10); // Remove non-digits and limit length
+            var areaCode = input.substring(0,3);
+            var middle = input.substring(3,6);
+            var last = input.substring(6,10);
+
+            // Format the input based on the length
+            if(input.length > 6){
+                event.target.value = `(${areaCode}) ${middle}-${last}`;
+            } else if(input.length > 3){
+                event.target.value = `(${areaCode}) ${middle}`;
+            } else if(input.length > 0){
+                event.target.value = `(${areaCode}`;
+            }
+
+            // Validate and show message
+            validatePhoneNumber(input);
+        }
+
+        function validatePhoneNumber(input) {
+            var message = '';
+            if(input.length < 10 && input.length > 0) {
+                message = 'Incomplete number';
+            } else if(input.length > 10) {
+                message = 'Number is too long';
+            }
+            document.getElementById('phone-message').textContent = message;
+        }
     </script>
 </body>
 </html>

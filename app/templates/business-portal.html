@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.1.2/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+
+    <!-- Header -->
+    <header class="bg-white shadow">
+        <!-- Navigation -->
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-8">
+        <div class="bg-white p-8 rounded-lg shadow-md">
+            <h2 class="text-2xl mb-6 text-center text-gray-700 font-bold">Business Profile</h2>
+
+            <!-- Business Information Section -->
+            <div class="flex flex-wrap -mx-4">
+                <!-- Profile Picture -->
+                <div class="w-full md:w-1/3 px-4 mb-4 md:mb-0">
+                    <!-- Display the Profile Picture -->
+                    <img src="/image/{{ business[0] }}" alt="Profile Picture" class="w-full h-auto rounded-lg">
+
+                    <!-- Image Upload Form -->
+                    <form method="post" action="/upload-profile-picture" enctype="multipart/form-data">
+                        <input type="file" name="profile_picture" class="my-3">
+                        <button type="submit" class="bg-red-600 text-white p-2 rounded hover:bg-red-700 focus:outline-none">Upload</button>
+                    </form>
+                </div>
+
+                <!-- Business Details -->
+                <div class="w-full md:w-2/3 px-4">
+                    <p>Name: {{ business[1] }}</p>
+                    <p>Description: {{ business.description }}</p>
+                    <!-- Add more fields as needed -->
+                </div>
+            </div>
+
+            <!-- Reviews Section -->
+            <div class="mt-6">
+                <h3 class="text-xl text-gray-700 font-semibold mb-4">Reviews</h3>
+                <!-- Iterate through reviews -->
+                {% for review in business.reviews %}
+                    <div class="border-t border-gray-300 pt-4">
+                        <p class="text-gray-600">{{ review.content }}</p>
+                        <span class="text-gray-500 text-sm">- {{ review.author }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white shadow mt-8 py-6">
+        <!-- Footer Content -->
+    </footer>
+
+</body>
+</html>
