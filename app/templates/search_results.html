@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results - Welp</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.1.2/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+
+    <header class="bg-white shadow">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <a href="/" class="text-red-600 text-3xl font-bold">Welp</a>
+            <div class="flex space-x-4">
+                <a href="#" class="hover:text-red-600">Write a Review</a>
+                <a href="/business-login" class="hover:text-red-600">For Businesses</a>
+                <a href="/login" class="hover:text-red-600">Log In</a>
+                <a href="/create-user" class="hover:text-red-600">Sign Up</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-8">
+        <div class="flex justify-center">
+            <form action="{{ url_for('search_results') }}" method="GET" class="relative">
+                <input type="search" name="query" class="h-14 px-5 pr-10 rounded-full text-sm focus:outline-none" placeholder="Search...">
+                <button type="submit" class="absolute right-0 top-0 mt-5 mr-4">
+                    <svg class="text-gray-600 h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M10,20A10,10,0,1,0,0,10,10,10,0,0,0,10,20Zm0-18a8,8,0,1,1-8,8A8,8,0,0,1,10,2Z"/>
+                        <path d="M21.707,20.293l-5.388-5.388a1,1,0,0,0-1.414,1.414l5.388,5.388a1,1,0,0,0,1.414-1.414Z"/>
+                    </svg>
+                </button>
+            </form>
+        </div>
+
+        <section class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {% if results %}
+                {% for result in results %}
+                    <a href="{{ url_for('business_page', id=result[0]) }}" class="restaurant-box rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition">
+                        <!-- Assuming 'result' is a tuple with 'id' at index 0 -->
+                        <img src="{{ result[2] }}" alt="{{ result[1] }}" class="w-full h-32 sm:h-48 object-cover">
+                        <h3 class="font-bold text-xl mb-2">{{ result[1] }}</h3>
+                        <p class="text-gray-700 text-base">{{ result[6] }}</p>
+                    </a>
+                {% endfor %}
+            {% else %}
+                <p class="text-gray-700 text-base">No results found.</p>
+            {% endif %}
+        </section>
+    </main>
+
+    <footer class="bg-white shadow mt-8 py-6">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-sm text-gray-600">&copy; 2023 Restaurant Listings. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

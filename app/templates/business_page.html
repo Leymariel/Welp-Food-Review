@@ -1,15 +1,60 @@
 <!-- business_page.html -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- ... -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ business[1] }} - Restaurant Details</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.1.2/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-    <article class="business-details">
-        <h2>{{ business[1] }}</h2>
-        <p>{{ business[2] }}</p>
-        <p>Rating: {{ business[3] }} / 5</p>
-        <!-- Add more details as needed -->
-    </article>
+<body class="bg-gray-100">
+
+    <header class="bg-white shadow">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <a href="/" class="text-red-600 text-3xl font-bold">Welp</a>
+            <div class="flex space-x-4">
+                <a href="/main-page" class="hover:text-red-600">Write a Review</a>
+                <a href="/business-login" class="hover:text-red-600">For Businesses</a>
+                <a href="/login" class="hover:text-red-600">Log In</a>
+                <a href="/create-user" class="hover:text-red-600">Sign Up</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-8">
+        <article class="business-details">
+            <h3 class="font-bold text-xl mb-2">{{ business[1] }}</h3>
+            <h2>{{ business[1] }}</h2>
+            <p>{{ business[2] }}</p>
+            <p>Rating: {{ business[3] }} / 5</p>
+            <!-- Display more details about the business -->
+
+            <!-- Review Form -->
+            <form class="review-form" method="post" action="/submit-review">
+                <div class="mb-4">
+                    <label for="rating">Your Rating (Out of 5):</label>
+                    <input type="number" id="rating" name="rating" min="1" max="5" required value="{{ business[3] }}">
+                    <!-- Pre-fill the rating with the current rating of the business -->
+                </div>
+                <div class="mb-4">
+                    <label for="reviewText">Write your review:</label>
+                    <textarea id="reviewText" name="reviewText" rows="4" required></textarea>
+                </div>
+                <input type="hidden" name="business_id" value="{{ business[0] }}">
+                <!-- You may need to include other hidden fields for user identification, etc. -->
+
+                <button type="submit" class="bg-red-600 text-white p-3 rounded hover:bg-red-700 focus:outline-none">Submit Review</button>
+            </form>
+        </article>
+    </main>
+
+    <footer class="bg-white shadow mt-8 py-6">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-sm text-gray-600">&copy; 2023 Restaurant Listings. All rights reserved.</p>
+        </div>
+    </footer>
+
 </body>
 </html>

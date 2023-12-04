@@ -52,3 +52,13 @@ class Business:
     def getAll():
         db_ops = db_operations()
         return db_ops.get_all("Businesses")
+    
+    @staticmethod
+    def search(query):
+        db_ops = db_operations()
+        # Perform your search logic based on the query using db_ops
+        # For example, searching for businesses with a matching name
+        search_query = f"SELECT * FROM Businesses WHERE BusinessName LIKE '%{query}%'"
+        results = db_ops.get_all_query(search_query)
+
+        return results

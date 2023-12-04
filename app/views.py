@@ -143,3 +143,13 @@ def serve_image(business_id):
         return Response(image_data[0], mimetype='image/jpeg')  # Adjust MIME type if necessary
     else:
         return "No image found", 404
+
+@app.route('/search-results')
+def search_results():
+    query = request.args.get('query')
+
+    # Perform search logic using your Business class
+    results = Business.search(query)
+
+    # Render the search results template with the search results
+    return render_template('search_results.html', results=results)
