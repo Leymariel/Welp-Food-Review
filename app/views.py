@@ -1,5 +1,6 @@
 from app import app
-from flask import Flask, request, redirect, url_for, session, render_template
+from flask import Flask, request, redirect, url_for, session, render_template, flash
+from base64 import b64encode
 from .models.user import User
 from .models.business import Business
 
@@ -23,8 +24,6 @@ def index():
                 
     return render_template('index.html')
 
-
-from flask import session
 
 @app.route('/business-login', methods=['GET', 'POST'])
 def business_login():
@@ -51,23 +50,26 @@ def business_portal():
     if not business_id:
         return redirect(url_for('business_login'))  # or any appropriate login route
 
+    business_info = Business.getBusinessByID(business_id)
+    business = Business(*business_info)
     if request.method == 'POST':
         # Handle profile picture upload
         file = request.files['profile_picture']
         if file:
             blob_data = file.read()
-            business = Business.getBusinessByID(business_id)
             business.setPhoto(blob_data)
+            
             
             flash("Profile picture updated successfully!")
             return redirect(url_for('business_portal'))
 
     # Fetch the current business details for display
-
-    business_info = Business.getBusinessByID(business_id)
+    photo_binary = business.getPhoto()
+    photo_base64 = b64encode(photo_binary).decode()
+    
     
     # Pass the business information to the template
-    return render_template('business-portal.html', business=business_info)
+    return render_template('business-portal.html', BusinessPhoto=photo_base64, business=business_info)
 
 @app.route('/create-business', methods=['GET', 'POST'])
 def create_business():
@@ -143,3 +145,15 @@ def serve_image(business_id):
         return Response(image_data[0], mimetype='image/jpeg')  # Adjust MIME type if necessary
     else:
         return "No image found", 404
+
+
+
+@app.route('/search-results')
+def search_results():
+    query = request.args.get('query')
+
+    # Perform search logic using your Business class
+    results = Business.search(query)
+
+    # Render the search results template with the search results
+    return render_template('search_results.html', results=results)
