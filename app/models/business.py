@@ -1,7 +1,7 @@
 from .db_operations import db_operations
 
 class Business:
-    def __init__(self, id, businessName, address, phone, email, description, password, rating, website, hoursOfOp, photo):
+    def __init__(self, id, businessName, address, phone, email, website, description, hoursOfOp, password, rating, photo):
         self.id = id
         self.businessName = businessName
         self.address = address
@@ -14,6 +14,7 @@ class Business:
         self.website = website
         self.hoursOfOp = hoursOfOp
         self.photo = photo
+        self.card = {"businessName":self.businessName, "address":self.address, "phone":self.phone, "email":self.email, "description":self.description, "password":self.password, "rating":self.rating, "website":self.website, "hoursOfOp":self.hoursOfOp, "photo":self.photo, "id":self.id}
 
     @staticmethod
     def getBusinessByEmail(email):
@@ -28,7 +29,7 @@ class Business:
         if self.photo:
             return self.photo
         
-        with open("app/static/images/defaultpic.jpeg", "rb") as file:
+        with open("app/static/images/defaultStore.png", "rb") as file:
             blob_data = file.read()
             return blob_data 
         return None
@@ -37,7 +38,6 @@ class Business:
         db_ops = db_operations()
         query = "UPDATE Businesses SET BusinessPhoto = %s WHERE BusinessID = %s"
         params = (newPhoto, self.id)
-        print("ID", newPhoto)
         db_ops.send_query(query, params)
 
 
@@ -50,12 +50,13 @@ class Business:
         return business_row
 
     def checkPassword(self, password):
+        print(self.password, " ", password)
         return self.password == password
     
-    
-    def createNew(self):
+    @staticmethod
+    def createNew(businessName, address, phone, password, email, description):
         db_ops = db_operations()
-        query = f"INSERT INTO Businesses (BusinessName, Address, Phone, Password, Email, Description) VALUES ('{self.businessName}', '{self.address}', '{self.phone}', '{self.password}', '{self.email}', '{self.description}');"
+        query = f"INSERT INTO Businesses (BusinessName, Address, Phone, Password, Email, Description) VALUES ('{businessName}', '{address}', '{phone}', '{password}', '{email}', '{description}');"
         db_ops.send_query(query)
 
     @staticmethod
@@ -73,3 +74,36 @@ class Business:
 
 
         return results
+
+    @staticmethod
+    def getReviews(id):
+        db_ops = db_operations()
+
+        reviews = db_ops.get_row("Reviews", "BusinessID", id, mult = True)
+        return reviews
+    
+    def updateRating(self, updated):
+        db_ops = db_operations()
+        query = f"UPDATE Businesses SET Rating = {float(updated)} WHERE BusinessID = {self.id}"
+        db_ops.send_query(query)
+
+    def printer(self):
+        print(self.card)
+
+    def updateDetails(self, businessName, address, phone, email, description):
+        db_ops = db_operations()
+        self.businessName = businessName
+        self.address = address
+        self.phone = phone
+        self.email = email
+        self.description = description
+
+        query = """
+        UPDATE Businesses
+        SET businessName = %s, address = %s, phone = %s, email = %s, description = %s
+        WHERE BusinessID = %s;
+        """
+        
+        params = (businessName, address, phone, email, description, self.id)
+        db_ops.send_query(query, params)
+        

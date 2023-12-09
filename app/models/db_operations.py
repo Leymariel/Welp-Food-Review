@@ -41,17 +41,30 @@ class db_operations:
         found = self.cursor.fetchone()[0]
         return found
 
-    def get_row(self, table, IDvar, IDval):
+    def get_row(self, table, IDvar, IDval, mult = False):
         query = f"SELECT * FROM {table} WHERE {IDvar} = '{IDval}'"
         self.cursor.execute(query)
-        found = self.cursor.fetchone()
+        if mult:
+
+            found = self.cursor.fetchall()
+        else:
+            found = self.cursor.fetchone()
         return found
 
-    def send_query(self, query):
-        self.cursor.execute(query)
-        self.handle_unread_result()  # Consume any remaining results
-        self.connection.commit()
-        return self.cursor.lastrowid
+    def send_query(self, query, params = None):
+        try:
+            
+            self.cursor.execute(query, params)
+            self.connection.commit()
+        except mysql.connector.Error as error:
+            print(f"Failed to update record to database rollback: {error}")
+            # rollback if any exception occured
+            self.connection.rollback()
+        finally:
+            if self.connection.is_connected():
+                self.cursor.close()
+                self.connection.close()
+                print("MySQL connection is closed")
 
 
     def get_all(self, table):
@@ -60,11 +73,13 @@ class db_operations:
         results = self.cursor.fetchall()
         return results
 
-    def handle_unread_result(self):
-        while self.cursor.nextset():
-            pass
 
     def get_all_query(self, query):
         self.cursor.execute(query)
         results = self.cursor.fetchall()
         return results
+
+    def get_agg(self, query):
+        self.cursor.execute(query)
+        found = self.cursor.fetchone()
+        return found
