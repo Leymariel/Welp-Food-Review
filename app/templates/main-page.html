@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Business Listings</title>
+    <title>Restaurant Listings</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.1.2/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-100">
@@ -34,17 +34,16 @@
         </div>
 
         <section class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {% for Business in Businesses %}
-            <a href="{{ url_for('business_page', id=Business[0]) }}" class="Business-box rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition">
-                <img src="{{ Business.image_url }}" alt="{{ Business[1] }}" class="w-full h-32 sm:h-48 object-cover">
+            {% for restaurant in restaurants %}
+                <a href="{{ url_for('business_page', id=restaurant[0]) }}" class="restaurant-box rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition">
+                    <img src="{{ restaurant.image_url }}" alt="{{ restaurant[1] }}" class="w-full h-32 sm:h-48 object-cover">
                     <div class="px-6 py-4">
-                        <h3 class="font-bold text-xl mb-2">{{ Business[1] }}</h3>
-                        <p class="font-bold text-gray-700 text-base">{{ Business[2] }}</p>
-                        <p class="text-gray-700 text-base">{{ Business[6] }}</p>
-                        <p class="text-gray-700 text-base">Category: {{ Business[12] }}</p>
+                        <h3 class="font-bold text-xl mb-2">{{ restaurant[1] }}</h3>
+                        <p class="font-bold class="text-gray-700 text-base">{{ restaurant[2] }}</p>
+                        <p class="text-gray-700 text-base">{{ restaurant[6] }}</p>
                     </div>
                     <div class="px-6 pt-4 pb-2">
-                        <span class="inline-block bg-red-200 rounded-full px-3 py-1 text-sm font-semibold text-red-600 mr-2 mb-2">Rating: {{ Business[9] }} / 5</span>
+                        <span class="inline-block bg-red-200 rounded-full px-3 py-1 text-sm font-semibold text-red-600 mr-2 mb-2">Rating: {{ restaurant[9] }} / 5</span>
                     </div>
                 </a>
             {% endfor %}

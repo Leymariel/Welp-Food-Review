@@ -1,7 +1,7 @@
 from .db_operations import db_operations
 
 class Business:
-    def __init__(self, id, businessName, address, phone, email, website, description, hoursOfOp, password, rating, photo, categories):
+    def __init__(self, id, businessName, address, phone, email, website, description, hoursOfOp, password, rating, photo):
         self.id = id
         self.businessName = businessName
         self.address = address
@@ -10,11 +10,11 @@ class Business:
         self.password = password
         self.description = description
         self.rating = rating
+
         self.website = website
         self.hoursOfOp = hoursOfOp
         self.photo = photo
-        self.categories = categories
-        self.card = {"businessName":self.businessName, "address":self.address, "phone":self.phone, "email":self.email, "description":self.description, "password":self.password, "rating":self.rating, "website":self.website, "hoursOfOp":self.hoursOfOp, "photo":self.photo, "id":self.id, "categories":self.categories}
+        self.card = {"businessName":self.businessName, "address":self.address, "phone":self.phone, "email":self.email, "description":self.description, "password":self.password, "rating":self.rating, "website":self.website, "hoursOfOp":self.hoursOfOp, "photo":self.photo, "id":self.id}
 
     @staticmethod
     def getBusinessByEmail(email):
@@ -90,7 +90,7 @@ class Business:
     def printer(self):
         print(self.card)
 
-    def updateDetails(self, businessName, address, phone, email, description, category_id):
+    def updateDetails(self, businessName, address, phone, email, description):
         db_ops = db_operations()
         self.businessName = businessName
         self.address = address
@@ -100,10 +100,10 @@ class Business:
 
         query = """
         UPDATE Businesses
-        SET businessName = %s, address = %s, phone = %s, email = %s, description = %s, categoryID= %s
+        SET businessName = %s, address = %s, phone = %s, email = %s, description = %s
         WHERE BusinessID = %s;
         """
-
-        params = (businessName, address, phone, email, description, category_id, self.id)
-
+        
+        params = (businessName, address, phone, email, description, self.id)
         db_ops.send_query(query, params)
+        
