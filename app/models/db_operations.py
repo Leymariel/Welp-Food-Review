@@ -67,8 +67,8 @@ class db_operations:
                 print("MySQL connection is closed")
 
 
-    def get_all(self, table):
-        query = f"SELECT * FROM {table}"
+    def get_all(self, table, columns="*"):
+        query = f"SELECT {columns} FROM {table}"
         self.cursor.execute(query)
         results = self.cursor.fetchall()
         return results
@@ -83,3 +83,43 @@ class db_operations:
         self.cursor.execute(query)
         found = self.cursor.fetchone()
         return found
+    
+    def get_categories(self):
+        query = "SELECT CategoryID, CategoryName FROM Categories"
+        self.cursor.execute(query)
+        results = self.cursor.fetchall()
+        return results
+
+    def get_category_id(self, category_name):
+        query = "SELECT CategoryID FROM Categories WHERE CategoryName = %s"
+        self.cursor.execute(query, (category_name,))
+        result = self.cursor.fetchone()
+        return result[0] if result else None
+    
+    def get_category_by_id(self, category_id):
+        query = "SELECT CategoryName FROM Categories WHERE CategoryID = %s;"
+        result = self.fetch_query(query, (category_id,))
+        
+        if result:
+            return result[0][1]  # Assuming the second column (index 1) is CategoryName
+        else:
+            return None  # Return None if no category is found
+
+
+        
+    def get_category_name(self, category_id):
+        try:
+            query = "SELECT CategoryName FROM Categories WHERE CategoryID = %s"
+            print(query)
+            self.cursor.execute(query, (category_id,))
+            result = self.cursor.fetchone()
+            return result[0] if result else None
+        except mysql.connector.Error as error:
+            print(f"Error in get_category_name: {error}")
+            return None
+
+    def get_custom_query(self, query):
+        self.cursor.execute(query)
+        results = self.cursor.fetchall()
+        return results
+

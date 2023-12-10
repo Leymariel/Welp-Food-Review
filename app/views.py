@@ -1,5 +1,5 @@
 from app import app
-from flask import Flask, request, redirect, url_for, session, render_template, flash
+from flask import Flask, request, redirect, url_for, session, render_template, flash, jsonify
 from base64 import b64encode
 from .models.user import User
 from .models.business import Business
@@ -55,21 +55,27 @@ def business_login():
 
 @app.route('/business-portal', methods=['GET', 'POST'])
 def business_portal():
+    db_ops = db_operations()
+    categories = db_ops.get_all('Categories')
+
     business_id = session.get('business_id')
     if not business_id:
         return redirect(url_for('business_login'))
 
     business_info = Business.getBusinessByID(business_id)
+    if not business_info:
+        flash("Business information not found", "error")
+        return redirect(url_for('business_login'))
+
     business = Business(*business_info)
 
     reviews = Business.getReviews(business_id)
     reviews_with_usernames = [(review + (User.getUserByID(review[2])[1],)) for review in reviews]
     
-
     photo_binary = business.getPhoto()
     photo_base64 = b64encode(photo_binary).decode("utf-8") if photo_binary else None
 
-    return render_template('business-portal.html', BusinessPhoto=photo_base64, business=business_info, reviews=reviews_with_usernames)
+    return render_template('business-portal.html', BusinessPhoto=photo_base64, business_info=business_info, reviews=reviews_with_usernames, categories=categories)
 
 
 @app.route('/create-business', methods=['GET', 'POST'])
@@ -120,11 +126,28 @@ def create_account():
 
 @app.route('/main-page', methods=['GET', 'POST'])
 def main_page():
-    # Return the account creation page
+    db_ops = db_operations()
     businesses = Business.getAll()
-    print(businesses)
-    return render_template('main-page.html', restaurants=businesses)
+    temp_businesses = []
+    for business in businesses:
+        temp_business = business
+        if isinstance(business, tuple):
+            category_id = business[11]
+            print(category_id is not None)
+            if category_id is not None:
+                print("hello word")
+                # Fetch the category name from the Categories table
+                category_name = db_ops.get_category_name(category_id)
+                print(category_name)
+                # Add the category name to the business dictionary
+                temp_business += (category_name,)
+            else:
+                temp_business += ("",)
+            temp_businesses.append(temp_business)
+    print(temp_businesses)
 
+                
+    return render_template('main-page.html', Businesses=temp_businesses)
 
 @app.route('/business/<int:id>')
 def business_page(id):
@@ -197,9 +220,8 @@ def update_business_info():
     email = request.form.get('email')
     description = request.form.get('description')
     
-    # Retrieve the business object
-    business_info = Business.getBusinessByID(business_id)
-    business = Business(*business_info)
+    category_id = request.form.get('categoryID')
+
 
     file = request.files.get('profile_picture')
     if file:
@@ -210,11 +232,17 @@ def update_business_info():
         flash("Profile picture updated successfully!")
         return redirect(url_for('business_portal'))
 
+    business_id = session.get('business_id')
+    business_info = Business.getBusinessByID(business_id)
+    business = Business(*business_info)
+    business.updateDetails(business_name, address, phone, email, description, category_id)
+
     # Save changes to the database (assuming your Business class has a method to do this)
-    business.updateDetails(business_name, address, phone, email, description)
+    business.updateDetails(business_name, address, phone, email, description, category_id)
 
     flash("Business information updated successfully!", "success")
     return redirect(url_for('business_portal'))
+
 
 @app.route('/logout', methods=['POST'])
 def logout():
@@ -245,4 +273,30 @@ def upload_to_drive(file):
         file = service.files().create(body=file_metadata, media_body=media, fields='id').execute()
         return f'File ID: {file.get("id")}'
     
-    
+@app.route('/get-categories', methods=['GET'])
+def get_categories():
+    # Fetch categories from the database
+    categories = db_operations.get_categories()
+    return jsonify(categories)
+
+@app.route('/submit-business', methods=['POST'])
+def submit_business():
+    # Create an instance of the db_operations class
+    db_ops = db_operations()
+
+    selected_category_name = request.form['categoryName']
+    category_id = db_ops.get_category_id(selected_category_name)
+
+    # Check if category_id is not None before further processing
+    if category_id is not None:
+        # Code to update the businesses table with the category_id
+        # (You can use db_ops.send_query or any other method you have in your db_operations class)
+
+        flash("Business submitted successfully!", "success")
+    else:
+        flash("Invalid category selected", "error")
+
+    # Don't forget to close the connection when done
+    db_ops.destructor()
+
+    return redirect(url_for('main_page'))
