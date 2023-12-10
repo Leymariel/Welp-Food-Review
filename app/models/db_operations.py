@@ -12,7 +12,6 @@ class db_operations:
         try:
             self.connection = mysql.connector.connect(**config)
             self.cursor = self.connection.cursor()
-            print("success")
 
         except mysql.connector.Error as err:
             print(f"Error: {err}")
@@ -26,18 +25,9 @@ class db_operations:
     def PrintDB(self):
         self.cursor.execute("SHOW TABLES")
         tables = self.cursor.fetchall()
-
-        for table_name in tables:
-            print(f"Contents of table {table_name[0]}:")
-
-            # Querying each table
-            self.cursor.execute(f"SELECT * FROM {table_name[0]}")
-            rows = self.cursor.fetchall()
-
-            # Printing the contents of each table
-            for row in rows:
-                print(row)
-            print("\n")
+        for row in rows:
+            print(row)
+        print("\n")
 
     def exists(self, table, IDvar, IDval):
         query = f"SELECT COUNT(*) FROM {table} WHERE {IDvar} = '{IDval}'"
@@ -51,30 +41,85 @@ class db_operations:
         found = self.cursor.fetchone()[0]
         return found
 
-    def get_row(self, table, IDvar, IDval):
+    def get_row(self, table, IDvar, IDval, mult = False):
         query = f"SELECT * FROM {table} WHERE {IDvar} = '{IDval}'"
         self.cursor.execute(query)
-        found = self.cursor.fetchone()
+        if mult:
+
+            found = self.cursor.fetchall()
+        else:
+            found = self.cursor.fetchone()
         return found
 
-    def send_query(self, query):
-        self.cursor.execute(query)
-        self.handle_unread_result()  # Consume any remaining results
-        self.connection.commit()
-        return self.cursor.lastrowid
+    def send_query(self, query, params = None):
+        try:
+            
+            self.cursor.execute(query, params)
+            self.connection.commit()
+        except mysql.connector.Error as error:
+            print(f"Failed to update record to database rollback: {error}")
+            # rollback if any exception occured
+            self.connection.rollback()
+        finally:
+            if self.connection.is_connected():
+                self.cursor.close()
+                self.connection.close()
+                print("MySQL connection is closed")
 
 
-    def get_all(self, table):
-        query = f"SELECT * FROM {table}"
+    def get_all(self, table, columns="*"):
+        query = f"SELECT {columns} FROM {table}"
         self.cursor.execute(query)
         results = self.cursor.fetchall()
         return results
 
-    def handle_unread_result(self):
-        while self.cursor.nextset():
-            pass
 
     def get_all_query(self, query):
         self.cursor.execute(query)
         results = self.cursor.fetchall()
         return results
+
+    def get_agg(self, query):
+        self.cursor.execute(query)
+        found = self.cursor.fetchone()
+        return found
+    
+    def get_categories(self):
+        query = "SELECT CategoryID, CategoryName FROM Categories"
+        self.cursor.execute(query)
+        results = self.cursor.fetchall()
+        return results
+
+    def get_category_id(self, category_name):
+        query = "SELECT CategoryID FROM Categories WHERE CategoryName = %s"
+        self.cursor.execute(query, (category_name,))
+        result = self.cursor.fetchone()
+        return result[0] if result else None
+    
+    def get_category_by_id(self, category_id):
+        query = "SELECT CategoryName FROM Categories WHERE CategoryID = %s;"
+        result = self.fetch_query(query, (category_id,))
+        
+        if result:
+            return result[0][1]  # Assuming the second column (index 1) is CategoryName
+        else:
+            return None  # Return None if no category is found
+
+
+        
+    def get_category_name(self, category_id):
+        try:
+            query = "SELECT CategoryName FROM Categories WHERE CategoryID = %s"
+            print(query)
+            self.cursor.execute(query, (category_id,))
+            result = self.cursor.fetchone()
+            return result[0] if result else None
+        except mysql.connector.Error as error:
+            print(f"Error in get_category_name: {error}")
+            return None
+
+    def get_custom_query(self, query):
+        self.cursor.execute(query)
+        results = self.cursor.fetchall()
+        return results
+

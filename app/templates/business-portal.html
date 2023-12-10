@@ -11,44 +11,61 @@
     <!-- Header -->
     <header class="bg-white shadow">
         <!-- Navigation -->
+        <div>
+            <form action="/logout" method="post">
+                <button type="submit" class="bg-red-600 text-white p-2 rounded hover:bg-red-700 focus:outline-none">
+                    Log Out
+                </button>
+            </form>
+        </div>
     </header>
 
     <!-- Main Content -->
     <main class="container mx-auto px-6 py-8">
         <div class="bg-white p-8 rounded-lg shadow-md">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
             <h2 class="text-2xl mb-6 text-center text-gray-700 font-bold">Business Profile</h2>
 
-            <!-- Business Information Section -->
-            <div class="flex flex-wrap -mx-4">
-                <!-- Profile Picture -->
-                <div class="w-full md:w-1/3 px-4 mb-4 md:mb-0">
-                    <!-- Display the Profile Picture -->
-                    <img src="/image/{{ business[0] }}" alt="Profile Picture" class="w-full h-auto rounded-lg">
-
-                    <!-- Image Upload Form -->
-                    <form method="post" action="/upload-profile-picture" enctype="multipart/form-data">
+            <!-- Business Information Edit Form -->
+            <form action="/update-business-info" method="post" enctype="multipart/form-data">
+                <div class="flex flex-wrap -mx-4 mb-6">
+                    <!-- Profile Picture -->
+                    <div class="w-full md:w-1/3 px-4 mb-4 md:mb-0">
+                        <img src="data:image/jpeg;base64,{{ BusinessPhoto }}" alt="Profile Picture" class="w-full h-auto rounded-lg">
                         <input type="file" name="profile_picture" class="my-3">
-                        <button type="submit" class="bg-red-600 text-white p-2 rounded hover:bg-red-700 focus:outline-none">Upload</button>
-                    </form>
+                    </div>
+
+                    <!-- Business Details Editable Fields -->
+                    <div class="w-full md:w-2/3 px-4">
+                        <input type="text" name="business_name" class="w-full p-2 mb-4 border rounded" placeholder="Business Name" value="{{ business[1] }}" required>
+                        <input type="text" name="address" class="w-full p-2 mb-4 border rounded" placeholder="Address" value="{{ business[2] }}" required>
+                        <input type="text" name="phone" class="w-full p-2 mb-4 border rounded" placeholder="Phone Number" value="{{ business[3] }}" required>
+                        <input type="email" name="email" class="w-full p-2 mb-4 border rounded" placeholder="Email" value="{{ business[4] }}" required>
+                        <textarea name="description" class="w-full p-2 mb-4 border rounded" placeholder="Description">{{ business[6] }}</textarea>
+                    </div>
                 </div>
 
-                <!-- Business Details -->
-                <div class="w-full md:w-2/3 px-4">
-                    <p>Name: {{ business[1] }}</p>
-                    <p>Description: {{ business.description }}</p>
-                    <!-- Add more fields as needed -->
-                </div>
-            </div>
+                <button type="submit" class="bg-blue-600 text-white p-2 rounded hover:bg-blue-700 focus:outline-none">Update Information</button>
+            </form>
 
             <!-- Reviews Section -->
-            <div class="mt-6">
+            <div class="reviews mt-8">
                 <h3 class="text-xl text-gray-700 font-semibold mb-4">Reviews</h3>
-                <!-- Iterate through reviews -->
-                {% for review in business.reviews %}
-                    <div class="border-t border-gray-300 pt-4">
-                        <p class="text-gray-600">{{ review.content }}</p>
-                        <span class="text-gray-500 text-sm">- {{ review.author }}</span>
+                {% for review in reviews %}
+                    <div class="review bg-white p-4 rounded-lg shadow-md mb-4">
+                        <p class="font-semibold">{{ review[-1] }}</p> <!-- Display username -->
+                        <p>Rating: {{ review[3] }} / 5</p>
+                        <p>{{ review[4] }}</p>
                     </div>
+                {% else %}
+                    <p>No reviews yet.</p>
                 {% endfor %}
             </div>
         </div>
