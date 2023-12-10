@@ -12,17 +12,17 @@
     <header class="bg-white shadow">
         <!-- Navigation -->
         <div>
-            <form action="/logout" method="post">
-                <button type="submit" class="bg-red-600 text-white p-2 rounded hover:bg-red-700 focus:outline-none">
-                    Log Out
-                </button>
-            </form>
+        <form action="/logout" method="post">
+            <button type="submit" class="bg-red-600 text-white p-2 rounded hover:bg-red-700 focus:outline-none">
+               Log Out
+            </button>
+        </form>
         </div>
     </header>
 
     <!-- Main Content -->
     <main class="container mx-auto px-6 py-8">
-        <div class="bg-white p-8 rounded-lg shadow-md">
+    <div class="bg-white p-8 rounded-lg shadow-md">
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                     {% for category, message in messages %}
@@ -33,48 +33,101 @@
 
             <h2 class="text-2xl mb-6 text-center text-gray-700 font-bold">Business Profile</h2>
 
-            <!-- Business Information Edit Form -->
-            <form action="/update-business-info" method="post" enctype="multipart/form-data">
-                <div class="flex flex-wrap -mx-4 mb-6">
-                    <!-- Profile Picture -->
-                    <div class="w-full md:w-1/3 px-4 mb-4 md:mb-0">
-                        <img src="data:image/jpeg;base64,{{ BusinessPhoto }}" alt="Profile Picture" class="w-full h-auto rounded-lg">
-                        <input type="file" name="profile_picture" class="my-3">
-                    </div>
-
-                    <!-- Business Details Editable Fields -->
-                    <div class="w-full md:w-2/3 px-4">
-                        <input type="text" name="business_name" class="w-full p-2 mb-4 border rounded" placeholder="Business Name" value="{{ business[1] }}" required>
-                        <input type="text" name="address" class="w-full p-2 mb-4 border rounded" placeholder="Address" value="{{ business[2] }}" required>
-                        <input type="text" name="phone" class="w-full p-2 mb-4 border rounded" placeholder="Phone Number" value="{{ business[3] }}" required>
-                        <input type="email" name="email" class="w-full p-2 mb-4 border rounded" placeholder="Email" value="{{ business[4] }}" required>
-                        <textarea name="description" class="w-full p-2 mb-4 border rounded" placeholder="Description">{{ business[6] }}</textarea>
-                    </div>
-                </div>
-
-                <button type="submit" class="bg-blue-600 text-white p-2 rounded hover:bg-blue-700 focus:outline-none">Update Information</button>
-            </form>
-
-            <!-- Reviews Section -->
-            <div class="reviews mt-8">
-                <h3 class="text-xl text-gray-700 font-semibold mb-4">Reviews</h3>
-                {% for review in reviews %}
-                    <div class="review bg-white p-4 rounded-lg shadow-md mb-4">
-                        <p class="font-semibold">{{ review[-1] }}</p> <!-- Display username -->
-                        <p>Rating: {{ review[3] }} / 5</p>
-                        <p>{{ review[4] }}</p>
-                    </div>
-                {% else %}
-                    <p>No reviews yet.</p>
-                {% endfor %}
-            </div>
+<!-- Business Information Edit Form -->
+<form action="/update-business-info" method="post" enctype="multipart/form-data">
+    <div class="flex flex-wrap -mx-4 mb-6">
+        <!-- Profile Picture -->
+        <div class="w-full md:w-1/3 px-4 mb-4 md:mb-0">
+            <img src="data:image/jpeg;base64,{{ BusinessPhoto }}" alt="Profile Picture" class="w-full h-auto rounded-lg">
+            <input type="file" name="profile_picture" class="my-3">
         </div>
-    </main>
 
-    <!-- Footer -->
-    <footer class="bg-white shadow mt-8 py-6">
-        <!-- Footer Content -->
-    </footer>
+<!-- Business Details Editable Fields -->
+<div class="w-full md:w-2/3 px-4">
+    <input type="text" name="business_name" class="w-full p-2 mb-4 border rounded" placeholder="Business Name" value="{{ business_info[1] }}" required>
+    <input type="text" name="address" class="w-full p-2 mb-4 border rounded" placeholder="Address" value="{{ business_info[2] }}" required>
+    <input type="text" name="phone" class="w-full p-2 mb-4 border rounded" placeholder="Phone Number" value="{{ business_info[3] }}" required>
+    <input type="email" name="email" class="w-full p-2 mb-4 border rounded" placeholder="Email" value="{{ business_info[4] }}" required>
+    <textarea name="description" class="w-full p-2 mb-4 border rounded" placeholder="Description">{{ business_info[6] }}</textarea>
+
+    <!-- Dropdown for selecting category -->
+    <div class="mb-4">
+        <label for="categoryID" class="block text-sm font-medium text-gray-700">Category</label>
+        <select name="categoryID" id="categoryID" class="w-full p-2 border rounded" required>
+            <!-- Dynamically populate options from Categories table -->
+            {% for category in categories %}
+                <option value="{{ category[0] }}" {{ 'selected' if business_info and category[0] == business_info[8] else '' }}>{{ category[1] }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <button type="submit" class="bg-blue-600 text-white p-2 rounded hover:bg-blue-700 focus:outline-none">Update Information</button>
+</div>
+    </div>
+</form>
+
+<!-- Reviews Section -->
+<div class="reviews mt-8">
+    <h3 class="text-xl text-gray-700 font-semibold mb-4">Reviews</h3>
+    {% for review in reviews %}
+        <div class="review bg-white p-4 rounded-lg shadow-md mb-4">
+            <p class="font-semibold">{{ review[-1] }}</p> <!-- Display username -->
+            <p>Rating: {{ review[3] }} / 5</p>
+            <p>{{ review[4] }}</p>
+        </div>
+    {% else %}
+        <p>No reviews yet.</p>
+    {% endfor %}
+</div>
+
+<!-- JavaScript to update the category_id field -->
+<script>
+        document.addEventListener('DOMContentLoaded', function () {
+        const categoryNameSelect = document.getElementById('categoryName');
+        const categoryIDInput = document.getElementById('categoryID');
+
+        categoryNameSelect.addEventListener('change', function () {
+            // Assuming categories is an array of objects with 'categoryID' and 'categoryName'
+            const selectedCategory = categories.find(category => category.categoryName === categoryNameSelect.value);
+
+            if (selectedCategory) {
+                categoryIDInput.value = selectedCategory.categoryID;
+            }
+        });
+    });
+    function updateCategoryId(categoryId) {
+        document.getElementById('category_id' + categoryId).value = categoryId;
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const checkboxes = document.querySelectorAll('input[name="category"]');
+        
+        checkboxes.forEach((checkbox) => {
+            // Set the checkbox state based on local storage or default
+            const isChecked = localStorage.getItem(checkbox.value) === 'true';
+            checkbox.checked = isChecked;
+
+            checkbox.addEventListener('change', function () {
+                // Store the selected category in local storage
+                localStorage.setItem('selectedCategory', this.value);
+
+                // Uncheck other radio buttons
+                checkboxes.forEach((otherCheckbox) => {
+                    if (otherCheckbox !== this) {
+                       localStorage.removeItem(otherCheckbox.value);
+                    }
+                });
+            });
+        });
+    });
+
+    // Set the selected category after page refresh
+    const selectedCategory = localStorage.getItem('selectedCategory');
+    if (selectedCategory) {
+        document.querySelector(`input[name="category"][value="${selectedCategory}"]`).checked = true;
+    }
+</script>
+
 
 </body>
 </html>
